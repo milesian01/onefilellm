@@ -636,7 +636,11 @@ def is_allowed_filetype(filename):
         '.h',
         '.localhost',
         '.yaml',
-        '.example'
+        '.example',
+        'Dockerfile',
+        '.docker-compose.yml',
+        '.sh',
+        '.ps1'
     ]
 
     return any(filename.endswith(ext) for ext in allowed_extensions)
