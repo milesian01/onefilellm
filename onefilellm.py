@@ -677,12 +677,15 @@ def main():
         input_path = sys.argv[1]
     else:
         input_path = Prompt.ask("\n[bold dodger_blue1]Enter the path or URL[/bold dodger_blue1]", console=console)
+
+    # Prompt for prefix text for the output file names
+    prefix = Prompt.ask("\n[bold dodger_blue1]Enter prefix for output file names[/bold dodger_blue1]", console=console)
     
     console.print(f"\n[bold bright_green]You entered:[/bold bright_green] [bold bright_yellow]{input_path}[/bold bright_yellow]\n")
 
-    output_file = "uncompressed_output.txt"
-    processed_file = "compressed_output.txt"
-    urls_list_file = "processed_urls.txt"
+    output_file = f"{prefix} uncompressed_output.txt"
+    processed_file = f"{prefix} compressed_output.txt"
+    urls_list_file = f"{prefix} processed_urls.txt"
 
     with Progress(
         TextColumn("[bold bright_blue]{task.description}"),
@@ -735,6 +738,15 @@ def main():
             uncompressed_text = safe_file_read(output_file)
             uncompressed_token_count = get_token_count(uncompressed_text)
             console.print(f"[bright_green]Uncompressed Token Count:[/bright_green] [bold bright_cyan]{uncompressed_token_count}[/bold bright_cyan]")
+
+# Rename output files to include the token counts in their names
+new_output_file = f"{prefix} uncompressed_output {uncompressed_token_count}.txt"
+os.rename(output_file, new_output_file)
+output_file = new_output_file  # update variable if needed
+
+new_processed_file = f"{prefix} compressed_output {compressed_token_count}.txt"
+os.rename(processed_file, new_processed_file)
+processed_file = new_processed_file  # update variable if needed
 
             console.print(f"\n[bold bright_yellow]{processed_file}[/bold bright_yellow] and [bold bright_blue]{output_file}[/bold bright_blue] have been created in the working directory.")
 
