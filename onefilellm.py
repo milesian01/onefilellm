@@ -738,15 +738,15 @@ def main():
             uncompressed_text = safe_file_read(output_file)
             uncompressed_token_count = get_token_count(uncompressed_text)
             console.print(f"[bright_green]Uncompressed Token Count:[/bright_green] [bold bright_cyan]{uncompressed_token_count}[/bold bright_cyan]")
+            
+            # Rename output files to include the token counts in their names
+            new_output_file = f"{prefix} uncompressed_output {uncompressed_token_count}.txt"
+            os.rename(output_file, new_output_file)
+            output_file = new_output_file  # update variable if needed
 
-# Rename output files to include the token counts in their names
-new_output_file = f"{prefix} uncompressed_output {uncompressed_token_count}.txt"
-os.rename(output_file, new_output_file)
-output_file = new_output_file  # update variable if needed
-
-new_processed_file = f"{prefix} compressed_output {compressed_token_count}.txt"
-os.rename(processed_file, new_processed_file)
-processed_file = new_processed_file  # update variable if needed
+            new_processed_file = f"{prefix} compressed_output {compressed_token_count}.txt"
+            os.rename(processed_file, new_processed_file)
+            processed_file = new_processed_file  # update variable if needed
 
             console.print(f"\n[bold bright_yellow]{processed_file}[/bold bright_yellow] and [bold bright_blue]{output_file}[/bold bright_blue] have been created in the working directory.")
 
