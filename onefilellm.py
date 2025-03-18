@@ -1,4 +1,6 @@
+import datetime
 import requests
+from pathlib import Path
 from bs4 import BeautifulSoup, Comment
 from urllib.parse import urljoin, urlparse
 from PyPDF2 import PdfReader
@@ -647,6 +649,18 @@ def is_allowed_filetype(filename):
 
 def main():
     console = Console()
+    
+    # Add output directory prompt
+    default_output_dir = r"C:\temp\me\OneDrive - Miles Ahead Solutions\Attachments\1files"
+    output_dir = Prompt.ask(
+        "\n[bold dodger_blue1]Enter output directory[/bold dodger_blue1]",
+        default=default_output_dir,
+        console=console
+    )
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Generate formatted timestamp
+    timestamp = datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
 
     intro_text = Text("\nInput Paths or URLs Processed:\n", style="dodger_blue1")
     input_types = [
@@ -683,9 +697,9 @@ def main():
     
     console.print(f"\n[bold bright_green]You entered:[/bold bright_green] [bold bright_yellow]{input_path}[/bold bright_yellow]\n")
 
-    output_file = f"{prefix} uncompressed_output.txt"
-    processed_file = f"{prefix} compressed_output.txt"
-    urls_list_file = f"{prefix} processed_urls.txt"
+    output_file = os.path.join(output_dir, f"{prefix}_{timestamp}_uncompressed_output.txt")
+    processed_file = os.path.join(output_dir, f"{prefix}_{timestamp}_compressed_output.txt")
+    urls_list_file = os.path.join(output_dir, f"{prefix}_{timestamp}_processed_urls.txt")
 
     with Progress(
         TextColumn("[bold bright_blue]{task.description}"),
@@ -740,11 +754,11 @@ def main():
             console.print(f"[bright_green]Uncompressed Token Count:[/bright_green] [bold bright_cyan]{uncompressed_token_count}[/bold bright_cyan]")
             
             # Rename output files to include the token counts in their names
-            new_output_file = f"{prefix} uncompressed_output {uncompressed_token_count}.txt"
+            new_output_file = os.path.join(output_dir, f"{prefix}_{timestamp}_uncompressed_output_{uncompressed_token_count}.txt")
             os.rename(output_file, new_output_file)
             output_file = new_output_file  # update variable if needed
 
-            new_processed_file = f"{prefix} compressed_output {compressed_token_count}.txt"
+            new_processed_file = os.path.join(output_dir, f"{prefix}_{timestamp}_compressed_output_{compressed_token_count}.txt") 
             os.rename(processed_file, new_processed_file)
             processed_file = new_processed_file  # update variable if needed
 
