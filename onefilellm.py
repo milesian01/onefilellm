@@ -810,18 +810,33 @@ def main():
                 result = crawl_and_extract_text(url, max_depth=0, include_pdfs=True, ignore_epubs=True)
                 additional_content.append(result['content'])
             
-            with open(output_file, "a", encoding="utf-8") as file:
-                file.write("\n".join(additional_content))
+            # Create new rescrape output files
+            rescrape_content = "\n".join(additional_content)
+            rescrape_content = "<root>\n" + rescrape_content + "\n</root>"
 
-            # Ensure valid XML by wrapping content in a root element
-            with open(output_file, "r", encoding="utf-8") as f:
-                file_content = f.read()
-            if not file_content.strip().startswith("<root>"):
-                file_content = "<root>\n" + file_content + "\n</root>"
-            with open(output_file, "w", encoding="utf-8") as f:
-                f.write(file_content)
+            rescrape_uncompressed_file = os.path.join(output_dir, f"{prefix}_{timestamp}_rescrape_uncompressed_output.txt")
+            with open(rescrape_uncompressed_file, "w", encoding="utf-8") as f:
+                f.write(rescrape_content)
 
-            preprocess_text(output_file, processed_file)
+            rescrape_compressed_file = os.path.join(output_dir, f"{prefix}_{timestamp}_rescrape_compressed_output.txt")
+            preprocess_text(rescrape_uncompressed_file, rescrape_compressed_file)
+
+            # Compute token counts and rename files
+            rescrape_uncompressed_text = safe_file_read(rescrape_uncompressed_file)
+            rescrape_uncompressed_token_count = get_token_count(rescrape_uncompressed_text)
+
+            rescrape_compressed_text = safe_file_read(rescrape_compressed_file)
+            rescrape_compressed_token_count = get_token_count(rescrape_compressed_text)
+
+            new_rescrape_uncompressed = os.path.join(output_dir, f"{prefix}_{timestamp}_rescrape_uncompressed_output_{rescrape_uncompressed_token_count}.txt")
+            os.rename(rescrape_uncompressed_file, new_rescrape_uncompressed)
+            rescrape_uncompressed_file = new_rescrape_uncompressed
+
+            new_rescrape_compressed = os.path.join(output_dir, f"{prefix}_{timestamp}_rescrape_compressed_output_{rescrape_compressed_token_count}.txt")
+            os.rename(rescrape_compressed_file, new_rescrape_compressed)
+            rescrape_compressed_file = new_rescrape_compressed
+
+            console.print(f"\n[bold bright_yellow]{rescrape_compressed_file}[/bold bright_yellow] and [bold bright_blue]{rescrape_uncompressed_file}[/bold bright_blue] have been created as the rescrape outputs.")
         
 if __name__ == "__main__":
     main()
