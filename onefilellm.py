@@ -762,7 +762,6 @@ def main():
             os.rename(processed_file, new_processed_file)
             processed_file = new_processed_file
 
-            console.print(f"\n[bold bright_yellow]{processed_file}[/bold bright_yellow] and [bold bright_blue]{output_file}[/bold bright_blue] have been created in the working directory.")
             processed_urls_text = safe_file_read(urls_list_file)
             pyperclip.copy(processed_urls_text)
             console.print(f"\n[bright_white]The processed URLs in [bold bright_blue]{urls_list_file}[/bold bright_blue] have been copied to the clipboard.[/bright_white]")
@@ -777,11 +776,9 @@ def main():
             console.print(f"   - [blue]{output_file}[/blue] (Uncompressed Output)")
             console.print(f"   - [magenta]{urls_list_file}[/magenta] (Processed URLs)")
 
-            # Ensure the processed URLs are copied to the clipboard
-            with open(urls_list_file, "r", encoding="utf-8") as f:
-                pyperclip.copy(f.read())
-
-            console.print(f"\n [bold cyan]The processed URLs have been copied to the clipboard.[/bold cyan]")
+            processed_urls_text = safe_file_read(urls_list_file)
+            pyperclip.copy(processed_urls_text)
+            console.print(f"\n[bright_white]The processed URLs in [bold bright_blue]{urls_list_file}[/bold bright_blue] have been copied to the clipboard.[/bright_white]")
 
         except Exception as e:
             console.print(f"\n[bold red]An error occurred:[/bold red] {str(e)}")
