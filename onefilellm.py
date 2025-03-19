@@ -726,8 +726,6 @@ def main():
                 else:
                     crawl_result = crawl_and_extract_text(input_path, max_depth=2, include_pdfs=True, ignore_epubs=True)
                     final_output = crawl_result['content']
-                    with open(urls_list_file, 'w', encoding='utf-8') as urls_file:
-                        urls_file.write('\n'.join(crawl_result['processed_urls']))
             elif input_path.startswith("10.") and "/" in input_path or input_path.isdigit():
                 final_output = process_doi_or_pmid(input_path)
             else:
@@ -738,6 +736,9 @@ def main():
             # Write the uncompressed output
             with open(output_file, "w", encoding="utf-8") as file:
                 file.write(final_output)
+
+            # Export processed URLs file containing all scraped links
+            extract_links(output_file, urls_list_file)
 
 
             # Process the compressed output
