@@ -763,8 +763,9 @@ def main():
             processed_file = new_processed_file
 
             console.print(f"\n[bold bright_yellow]{processed_file}[/bold bright_yellow] and [bold bright_blue]{output_file}[/bold bright_blue] have been created in the working directory.")
-            pyperclip.copy(uncompressed_text)
-            console.print(f"\n[bright_white]The contents of [bold bright_blue]{output_file}[/bold bright_blue] have been copied to the clipboard.[/bright_white]")
+            processed_urls_text = safe_file_read(urls_list_file)
+            pyperclip.copy(processed_urls_text)
+            console.print(f"\n[bright_white]The processed URLs in [bold bright_blue]{urls_list_file}[/bold bright_blue] have been copied to the clipboard.[/bright_white]")
             output_file = new_output_file  # update variable if needed
 
             new_processed_file = os.path.join(output_dir, f"{prefix}_{timestamp}_compressed_output_{compressed_token_count}.txt") 
@@ -839,4 +840,8 @@ def main():
             console.print(f"\n[bold bright_yellow]{rescrape_compressed_file}[/bold bright_yellow] and [bold bright_blue]{rescrape_uncompressed_file}[/bold bright_blue] have been created as the rescrape outputs.")
         
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
+        again = Prompt.ask("\nDo you want to run the process again? (y/n)", default="n")
+        if again.lower() not in ("y", "yes"):
+            break
