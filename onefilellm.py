@@ -741,47 +741,6 @@ def main():
             # Export processed URLs file containing all scraped links
             extract_links(output_file, urls_list_file)
 
-            # Start of selective re-scraping section
-            from rich.prompt import Confirm
-            import questionary
-
-            selective_scrape = Confirm.ask("\nWould you like to selectively re-scrap URLs?", default=False)
-
-            if selective_scrape:
-                with open(urls_list_file, "r", encoding="utf-8") as f:
-                    all_urls = [url.strip() for url in f if url.strip()]
-
-                scrape_mode = questionary.select(
-                    "How would you like to select URLs?",
-                    choices=["Manual Entry", "Interactive Selection"]
-                ).ask()
-
-                if scrape_mode == "Manual Entry":
-                    selected_input = Prompt.ask("Paste URLs (comma or newline-separated)", console=console)
-                    selected_urls = re.split(r'[\n,]+', selected_input.strip())
-                    selected_urls = [url.strip() for url in selected_urls if url.strip()]
-
-                elif scrape_mode == "Interactive Selection":
-                    selected_urls = questionary.checkbox(
-                        "Select URLs to re-scrape:",
-                        choices=all_urls
-                    ).ask()
-
-                # Re-scrape selected URLs and append content
-                additional_content = []
-                for url in selected_urls:
-                    print(f"Re-scraping: {url}")
-                    result = crawl_and_extract_text(url, max_depth=0, include_pdfs=True, ignore_epubs=True)
-                    additional_content.append(result['content'])
-
-                # Append re-scraped content to existing output
-                with open(output_file, "a", encoding="utf-8") as file:
-                    file.write("\n".join(additional_content))
-
-                # Update compressed output after re-scraping
-                preprocess_text(output_file, processed_file)
-            # End of selective re-scraping section
-
 
             # Only preprocess if selective scraping was NOT done, as we already preprocessed it above
             if not selective_scrape:
