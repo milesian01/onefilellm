@@ -774,11 +774,8 @@ def main():
                     file.write("\n".join(additional_content))
                 
                 preprocess_text(output_file, processed_file)
-            with open(output_file, "w", encoding="utf-8") as file:
-                file.write(final_output)
-            # Export processed URLs file containing all scraped links
-            extract_links(output_file, urls_list_file)
 
+            # Remove redundant preprocess_text() call here since it's already in the selective block
             compressed_text = safe_file_read(processed_file)
             compressed_token_count = get_token_count(compressed_text)
             console.print(f"\n[bright_green]Compressed Token Count:[/bright_green] [bold bright_cyan]{compressed_token_count}[/bold bright_cyan]")
