@@ -230,9 +230,10 @@ def extract_links(input_file, output_file):
         content = file.read()
         urls = re.findall(url_pattern, content)
     
+    urls = sorted(set(urls))  # Sort alphabetically and remove duplicates
     with open(output_file, 'w', encoding='utf-8') as output:
         for url in urls:
-            output.write(url + '\n')
+            output.write(url.strip() + '\n')
 
 def fetch_youtube_transcript(url):
     def extract_video_id(url):
@@ -782,8 +783,9 @@ def main():
             # End of selective re-scraping section
 
 
-            # Process the compressed output
-            preprocess_text(output_file, processed_file)
+            # Only preprocess if selective scraping was NOT done, as we already preprocessed it above
+            if not selective_scrape:
+                preprocess_text(output_file, processed_file)
 
             progress.update(task, advance=50)
 
