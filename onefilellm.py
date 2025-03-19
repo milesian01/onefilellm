@@ -812,7 +812,15 @@ def main():
             
             with open(output_file, "a", encoding="utf-8") as file:
                 file.write("\n".join(additional_content))
-            
+
+            # Ensure valid XML by wrapping content in a root element
+            with open(output_file, "r", encoding="utf-8") as f:
+                file_content = f.read()
+            if not file_content.strip().startswith("<root>"):
+                file_content = "<root>\n" + file_content + "\n</root>"
+            with open(output_file, "w", encoding="utf-8") as f:
+                f.write(file_content)
+
             preprocess_text(output_file, processed_file)
         
 if __name__ == "__main__":
