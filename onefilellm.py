@@ -763,7 +763,7 @@ def main():
 
                 elif scrape_mode == "Interactive Selection":
                     selected_urls = questionary.checkbox(
-                        "Select URLs to re-scrap:",
+                        "Select URLs to re-scrape:",
                         choices=all_urls
                     ).ask()
 
