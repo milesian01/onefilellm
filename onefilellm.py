@@ -772,10 +772,16 @@ def main():
             os.rename(processed_file, new_processed_file)
             processed_file = new_processed_file  # update variable if needed
 
-            console.print(f"\n[bold bright_yellow]{processed_file}[/bold bright_yellow] and [bold bright_blue]{output_file}[/bold bright_blue] have been created in the working directory.")
+            console.print(f"\n [bold green]Successfully created output files:[/bold green]")
+            console.print(f"   - [yellow]{processed_file}[/yellow] (Compressed Output)")
+            console.print(f"   - [blue]{output_file}[/blue] (Uncompressed Output)")
+            console.print(f"   - [magenta]{urls_list_file}[/magenta] (Processed URLs)")
 
-            pyperclip.copy(uncompressed_text)
-            console.print(f"\n[bright_white]The contents of [bold bright_blue]{output_file}[/bold bright_blue] have been copied to the clipboard.[/bright_white]")
+            # Ensure the processed URLs are copied to the clipboard
+            with open(urls_list_file, "r", encoding="utf-8") as f:
+                pyperclip.copy(f.read())
+
+            console.print(f"\n [bold cyan]The processed URLs have been copied to the clipboard.[/bold cyan]")
 
         except Exception as e:
             console.print(f"\n[bold red]An error occurred:[/bold red] {str(e)}")
@@ -837,7 +843,9 @@ def main():
             os.rename(rescrape_compressed_file, new_rescrape_compressed)
             rescrape_compressed_file = new_rescrape_compressed
 
-            console.print(f"\n[bold bright_yellow]{rescrape_compressed_file}[/bold bright_yellow] and [bold bright_blue]{rescrape_uncompressed_file}[/bold bright_blue] have been created as the rescrape outputs.")
+            console.print(f"\n [bold green]Rescrape Completed![/bold green] New files created:")
+            console.print(f"   - [yellow]{rescrape_compressed_file}[/yellow] (Rescrape Compressed Output)")
+            console.print(f"   - [blue]{rescrape_uncompressed_file}[/blue] (Rescrape Uncompressed Output)")
         
 if __name__ == "__main__":
     while True:
