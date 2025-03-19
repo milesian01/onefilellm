@@ -735,45 +735,36 @@ def main():
             progress.update(task, advance=50)
 
             # Write the uncompressed output
-
             with open(output_file, "w", encoding="utf-8") as file:
                 file.write(final_output)
             # Export processed URLs file containing all scraped links
             extract_links(output_file, urls_list_file)
-            progress.stop()  # Ensure progress is stopped before prompt
-            console.print(f"\n[bright_green]Compressed Token Count:[/bright_green] [bold bright_cyan]{compressed_token_count}[/bold bright_cyan]")
-
+            preprocess_text(output_file, processed_file)  # Preprocessing first
+            
+            # Calculate token counts before printing
+            compressed_text = safe_file_read(processed_file)
+            compressed_token_count = get_token_count(compressed_text)
             uncompressed_text = safe_file_read(output_file)
             uncompressed_token_count = get_token_count(uncompressed_text)
+
+            progress.stop()  # Ensure progress is stopped before prompt
+
+            # Print token counts
+            console.print(f"\n[bright_green]Compressed Token Count:[/bright_green] [bold bright_cyan]{compressed_token_count}[/bold bright_cyan]")
             console.print(f"[bright_green]Uncompressed Token Count:[/bright_green] [bold bright_cyan]{uncompressed_token_count}[/bold bright_cyan]")
-            
-            # Rename output files to include the token counts in their names
+
+            # Rename files with token counts
             new_output_file = os.path.join(output_dir, f"{prefix}_{timestamp}_uncompressed_output_{uncompressed_token_count}.txt")
             os.rename(output_file, new_output_file)
-            output_file = new_output_file  # update variable if needed
+            output_file = new_output_file
 
             new_processed_file = os.path.join(output_dir, f"{prefix}_{timestamp}_compressed_output_{compressed_token_count}.txt") 
             os.rename(processed_file, new_processed_file)
-            processed_file = new_processed_file  # update variable if needed
+            processed_file = new_processed_file
 
             console.print(f"\n[bold bright_yellow]{processed_file}[/bold bright_yellow] and [bold bright_blue]{output_file}[/bold bright_blue] have been created in the working directory.")
-
             pyperclip.copy(uncompressed_text)
             console.print(f"\n[bright_white]The contents of [bold bright_blue]{output_file}[/bold bright_blue] have been copied to the clipboard.[/bright_white]")
-
-
-
-            compressed_text = safe_file_read(processed_file)
-            compressed_token_count = get_token_count(compressed_text)
-            console.print(f"\n[bright_green]Compressed Token Count:[/bright_green] [bold bright_cyan]{compressed_token_count}[/bold bright_cyan]")
-
-            uncompressed_text = safe_file_read(output_file)
-            uncompressed_token_count = get_token_count(uncompressed_text)
-            console.print(f"[bright_green]Uncompressed Token Count:[/bright_green] [bold bright_cyan]{uncompressed_token_count}[/bold bright_cyan]")
-            
-            # Rename output files to include the token counts in their names
-            new_output_file = os.path.join(output_dir, f"{prefix}_{timestamp}_uncompressed_output_{uncompressed_token_count}.txt")
-            os.rename(output_file, new_output_file)
             output_file = new_output_file  # update variable if needed
 
             new_processed_file = os.path.join(output_dir, f"{prefix}_{timestamp}_compressed_output_{compressed_token_count}.txt") 
